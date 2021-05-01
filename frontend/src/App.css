@@ -1,0 +1,67 @@
+body {
+	background: #141414;
+	color: #ffffff;
+}
+
+/* 
+    If the amount movies overfills the row, 
+    continue placing them horizontally and 
+    allow for scrolling on the x-axis but 
+    not the y-axis in the row 
+*/
+.releases-container > .row {
+	overflow-x: auto;
+	flex-wrap: nowrap;
+    overflow-y: hidden;
+}
+
+/* Hide the scroll bars in the row */
+.releases-container ::-webkit-scrollbar {
+    display: none;
+}
+
+/* 
+    A container to hold all information 
+    related to an individual movie 
+*/
+.movie-container {
+	position: relative;
+	transition: transform 0.2s;
+}
+
+/* Enlarge the container when hovered over or focused on */
+.movie-container:hover, .movie-container:focus {
+	cursor: pointer;
+	transform: scale(1.1);
+}
+
+/* A card to provide information about a movie, hidden at first */
+.movie-overlay {
+    background-color: #ffffff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: #22254b;
+    padding: 1rem;
+    transform: translateY(102%);
+    transition: transform 0.3s ease-in-out;
+    overflow: auto;
+    max-height: 100%;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    box-shadow: 0 -3px 5px rgba(0,0,0,0.1);
+    transition: 0.5s ease;
+    opacity: 0;
+}
+
+/* Show movie info. card when hovered over or focused on */
+.movie-container:hover .movie-overlay {
+    opacity: 1;
+    transform: translateY(0%);
+}
+
+.movie-container:focus .movie-overlay {
+    opacity: 1;
+    transform: translateY(0%);
+}
