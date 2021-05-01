@@ -4,7 +4,7 @@ from models import db, Movie
 import os
 import json
 
-# https://api.themoviedb.org/3/find/tt0076759?api_key=927dd7ea98fd5ba426ffb8fb1f2c88d0&language=en-US&external_source=imdb_id
+# https://api.themoviedb.org/3/find/tt0076759?api_key={}&language=en-US&external_source=imdb_id
 # import requests
 
 # x = requests.get('https://w3schools.com')
