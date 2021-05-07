@@ -30,6 +30,6 @@ class Movie(db.Model):
     def __str__(self):
         return f'{{ "id": "{self.id}", "imdb_id": "{self.imdb_id}", "tmdb_id": "{self.tmdb_id}", "title": "{self.title}", "poster": "{self.poster}", "overview": "{self.overview}", "rating": "{self.rating}", "release_week": "{self.release_week}"}}'
    
-    def __itr__(self):
+    def __iter__(self):
         for column in self.__table__.columns:
-            yield column.name, getattr(self, column.name)
+            yield (column.name, getattr(self, column.name))
