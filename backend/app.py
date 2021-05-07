@@ -8,9 +8,7 @@ from models import db, Movie
 from flask import Flask, jsonify, request, abort
 from apscheduler.schedulers.background import BackgroundScheduler
 
-# app = Flask(__name__)
-# app = Flask(__name__, static_folder='./build', static_url_path='/')
-app = Flask(__name__, static_folder='./frontend/public', static_url_path='/')
+app = Flask(__name__)
 
 
 # SQLAlchemy configurations
@@ -170,8 +168,5 @@ scheduler.add_job(func=scrape_n_save, id='cron_scrape_n_save', name='Update DB w
 atexit.register(lambda: scheduler.shutdown())
 
 
-# if __name__ == "__main__":
-#     app.run()
-
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
+    app.run()

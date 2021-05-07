@@ -9,57 +9,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import MovieList from './components/MovieList';
 import WeekHeading from './components/WeekHeading';
 
-// Temporary mock data
-const SAMPLE_MOVIES = [
-  {
-    "Title": "Star Wars: The Last Jedi",
-    "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ1MzcxNjg4N15BMl5BanBnXkFtZTgwNzgwMjY4MzI@._V1_SX300.jpg",
-    "IMDbID": "1",
-    "Overview": "This is a movie. This is the overview of said movie.",
-    "Vote_Avg": "2"
-  },
-  {
-    "Title": "Star Wars: The Last Jedi",
-    "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ1MzcxNjg4N15BMl5BanBnXkFtZTgwNzgwMjY4MzI@._V1_SX300.jpg",
-    "IMDbID": "1",
-    "Overview": "This is a movie. This is the overview of said movie.",
-    "Vote_Avg": "2"
-  },
-  {
-    "Title": "Star Wars: The Last Jedi",
-    "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ1MzcxNjg4N15BMl5BanBnXkFtZTgwNzgwMjY4MzI@._V1_SX300.jpg",
-    "IMDbID": "1",
-    "Overview": "This is a movie. This is the overview of said movie.",
-    "Vote_Avg": "2"
-  },
-  {
-    "Title": "Star Wars: The Last Jedi",
-    "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ1MzcxNjg4N15BMl5BanBnXkFtZTgwNzgwMjY4MzI@._V1_SX300.jpg",
-    "IMDbID": "1",
-    "Overview": "This is a movie. This is the overview of said movie.",
-    "Vote_Avg": "2"
-  },
-  {
-    "Title": "Star Wars: The Last Jedi",
-    "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ1MzcxNjg4N15BMl5BanBnXkFtZTgwNzgwMjY4MzI@._V1_SX300.jpg",
-    "IMDbID": "1",
-    "Overview": "This is a movie. This is the overview of said movie.",
-    "Vote_Avg": "2"
-  }
-];
-
 const App = () => {
-	const [movies, setMovies] = useState([]);
+	const [moviesByWeek, setMoviesByWeek] = useState([]);
 
 	const getWeeklyReleases= async () => {
-    /* 
-      TODO: Retreive actual weekly release info. from backend
-      const url = ``;
-      const response = await fetch(url);
+      const response = await fetch("/api/all-releases");
       const data = await response.json();
-      setMovies(data);
-    */
-    setMovies(SAMPLE_MOVIES);
+
+      let moviesByWeek = data.query_results.reduce((hash, obj) => ({...hash, [obj.release_week]:( hash[obj.release_week] || [] ).concat(obj)}), {});
+      console.log(Object.entries(moviesByWeek));
+      setMoviesByWeek(Object.entries(moviesByWeek));
 	};
 
   // Retrieves weekly releases on page load
@@ -73,18 +32,20 @@ const App = () => {
       <div className='row d-flex align-items-center justify-content-center mt-4 mb-4'>
 				<h1>Weekly DVD Releases</h1>
 			</div>
-			<div className='row d-flex align-items-center mt-4 mb-4'>
-				<WeekHeading week='This Week' />
-			</div>
-			<div className='row'>
-				<MovieList movies={movies} />
-			</div>
-			<div className='row d-flex align-items-center mt-4 mb-4'>
-				<WeekHeading week='Next Week' />
-			</div>
-			<div className='row'>
-				<MovieList movies={movies} />
-			</div>
+      <>
+        {
+          moviesByWeek.map((week) => (
+            <>
+              <div className='row d-flex align-items-center mt-4 mb-4'>
+                <WeekHeading week={week[0]} />
+              </div>
+              <div className='row'>
+                <MovieList movies={week[1]} />
+              </div>
+            </>
+          ))
+        }
+      </>
 		</div>
 	);
 };
