@@ -1,10 +1,12 @@
 import os
+import atexit
 import asyncio
 import aiohttp
 import requests
 from scraper import scrape
 from models import db, Movie
 from flask import Flask, jsonify, request, abort
+from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 
@@ -157,6 +159,16 @@ async def get_tmdb_data(movies):
 def scrape_n_save():
     movies = [(week['release_week'], movie['imdb_id']) for week in scrape() for movie in week['movies']]
     asyncio.get_event_loop().run_until_complete(get_tmdb_data(movies))
+
+# Create schedule for mailing status report
+scheduler = BackgroundScheduler()
+scheduler.start()
+
+scheduler.add_job(func=scrape_n_save, id='cron_scrape_n_save', name='Update DB with new releases every hour', trigger='cron', hour='*') 
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
+
 
 if __name__ == "__main__":
     app.run()
