@@ -4,7 +4,7 @@ import aiohttp
 import requests
 from scraper import scrape
 from models import db, Movie
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 
@@ -22,6 +22,55 @@ def home():
         <p>This API retrieves retail release schedules for DVDs by performing a web scrape</p> \
         <p>Source: https://www.dvdsreleasedates.com</p> \
         <p>(Upcoming) Try these endpoints: /this-week, /last-week, /next-week, /in-two-weeks, /all-weeks</p>"
+
+@app.route('/api/all-releases', methods=['GET'])
+def all_releases():
+    if request.method != "GET":
+        abort(404)
+
+    try:
+        movies = [dict(movie) for movie in db.session.query(Movie).all()]
+        return jsonify({'success': True, 'message': 'Query processed', 'query_results': movies}), 200
+    except Exception as e:
+        print(f"Error: {e}", flush=True)
+        return jsonify({'success': False, 'message': 'Error processing query'}), 400
+    finally:
+        db.session.close()
+
+@app.route('/api/this-weeks-releases', methods=['GET'])
+def this_week():
+    if request.method != "GET":
+        abort(404)
+    
+    return jsonify({ 'success': True, 'message': 'Query processed', 'query_results': get_by_week('this week') }), 200
+
+@app.route('/api/last-weeks-releases', methods=['GET'])
+def last_week():
+    if request.method != "GET":
+        abort(404)
+    
+    return jsonify({ 'success': True, 'message': 'Query processed', 'query_results': get_by_week('last week') }), 200
+
+@app.route('/api/next-weeks-releases', methods=['GET'])
+def next_week():
+    if request.method != "GET":
+        abort(404)
+    
+    return jsonify({ 'success': True, 'message': 'Query processed', 'query_results': get_by_week('next week') }), 200
+
+"""
+    Get all movies in the database whose release week matches the given query.
+"""
+def get_by_week(week):
+    with app.app_context():
+        try:
+            movies = Movie.query.filter(Movie.release_week.like(f"%{week}%")).all()
+            return [dict(movie) for movie in movies]
+        except Exception as e:
+            print(f"Error: {e}", flush=True)
+            return []
+        finally:
+            db.session.close()
 
 """
     An application factory for tethering a database to SQLAlchemy models.
