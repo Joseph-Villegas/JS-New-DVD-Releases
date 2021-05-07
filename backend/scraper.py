@@ -11,8 +11,6 @@ def scrape():
 	scrape_results = []
 	for table in tables:
 		release_week = table.find(attrs={'class': 'reldate'})
-		print(f'Release Week Info: {release_week.text}')
-
 
 		imdb_ids = [tag.find('a').attrs['href'].split('/')[4] for tag in table.findAll(attrs={'class': 'imdblink left'})]
 
@@ -26,7 +24,7 @@ def scrape():
 		for movie, imdb_id in zip(movies, imdb_ids):
 			movie['imdb_id'] = imdb_id
 
-		scrape_results.append({'release_week': release_week.text, 'movies': movies, 'num_movies': len(movies)})
+		scrape_results.append({'release_week': release_week.text.replace('(', ' ('), 'movies': movies, 'num_movies': len(movies)})
 
 	return scrape_results
 
