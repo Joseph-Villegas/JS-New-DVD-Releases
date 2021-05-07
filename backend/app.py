@@ -8,7 +8,10 @@ from models import db, Movie
 from flask import Flask, jsonify, request, abort
 from apscheduler.schedulers.background import BackgroundScheduler
 
-app = Flask(__name__)
+# app = Flask(__name__)
+# app = Flask(__name__, static_folder='./build', static_url_path='/')
+app = Flask(__name__, static_folder='./frontend/public', static_url_path='/')
+
 
 # SQLAlchemy configurations
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', '')
@@ -18,12 +21,9 @@ db.init_app(app)
 
 TMDB_API_KEY = os.environ.get('TMDB_API_KEY', '')
 
-@app.route('/', methods=['GET'])
-def home():
-    return "<h1>DVD Release Dates API</h1> \
-        <p>This API retrieves retail release schedules for DVDs by performing a web scrape</p> \
-        <p>Source: https://www.dvdsreleasedates.com</p> \
-        <p>(Upcoming) Try these endpoints: /this-week, /last-week, /next-week, /in-two-weeks, /all-weeks</p>"
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 @app.route('/api/all-releases', methods=['GET'])
 def all_releases():
@@ -170,5 +170,8 @@ scheduler.add_job(func=scrape_n_save, id='cron_scrape_n_save', name='Update DB w
 atexit.register(lambda: scheduler.shutdown())
 
 
+# if __name__ == "__main__":
+#     app.run()
+
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT', 80))
