@@ -1,0 +1,9 @@
+flask
+SQLAlchemy<1.4
+PyMySQL
+flask_sqlalchemy
+aiohttp
+bs4
+lxml
+requests
+apscheduler
