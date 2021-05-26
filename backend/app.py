@@ -169,7 +169,6 @@ scheduler.add_job(func=scrape_n_save, id='cron_scrape_n_save', name='Update DB w
 # Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
 
-
 if __name__ == "__main__":
     scrape_n_save()
     app.run(debug=True, host='0.0.0.0')
