@@ -1,0 +1,27 @@
+# Docker Compose: An orchestration tool used to 
+#                 manage multiple containers 
+#                 within an application
+
+# State the desired version of Docker Compose
+version: "3.9"
+
+# Services are the containers to be managed
+services: 
+    server:
+        build: ./backend
+        ports: 
+            - "80:5000"
+        volumes: 
+            - ./backend:/app
+        environment: 
+            - FLASK_ENV=development
+            - SQLALCHEMY_DATABASE_URI=$SQLALCHEMY_DATABASE_URI
+            - TMDB_API_KEY=$TMDB_API_KEY
+    web:
+        build: ./frontend
+        ports: 
+            - "3000:3000"
+        volumes: 
+            - ./frontend:/user/src/app
+        depends_on: 
+            - server
