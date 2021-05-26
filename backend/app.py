@@ -19,9 +19,10 @@ db.init_app(app)
 
 TMDB_API_KEY = os.environ.get('TMDB_API_KEY', '')
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    return app.send_static_file('index.html')
+    # return app.send_static_file('index.html')
+    return jsonify({'success': True, 'message': 'Connected to server'}), 200
 
 @app.route('/api/all-releases', methods=['GET'])
 def all_releases():
@@ -146,7 +147,8 @@ async def fetch(session, release_week, imdb_id):
 async def get_tmdb_data(movies):
     async with aiohttp.ClientSession() as session:
         with app.app_context():
-            Movie.query.delete()
+            db.session.query(Movie).delete()
+            db.session.commit()
         tasks = [fetch(session, release_week, imdb_id) for release_week, imdb_id in movies]
         await asyncio.gather(*tasks)
 
@@ -169,4 +171,5 @@ atexit.register(lambda: scheduler.shutdown())
 
 
 if __name__ == "__main__":
-    app.run()
+    scrape_n_save()
+    app.run(debug=True, host='0.0.0.0')

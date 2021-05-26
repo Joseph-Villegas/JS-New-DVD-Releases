@@ -36,7 +36,7 @@ const App = () => {
         {
           moviesByWeek.map((week) => (
             <>
-              <div className='row d-flex align-items-center mt-4 mb-4'>
+              <div key={week[0]} className='row d-flex align-items-center mt-4 mb-4'>
                 <WeekHeading week={week[0]} />
               </div>
               <div className='row'>

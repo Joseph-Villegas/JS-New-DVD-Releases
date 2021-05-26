@@ -5,7 +5,7 @@ const MovieList = (props) => {
 		<>
             { 
                 props.movies.map((movie) => (
-                    <div tabIndex="1" className="movie-container d-flex justify-content-start m-3">
+                    <div key={movie.id} tabIndex="1" className="movie-container d-flex justify-content-start m-3">
                         <img src={movie.poster} alt={movie.title} />
                         <div className="movie-overlay">
                             <h2>Title: {movie.title}</h2>
